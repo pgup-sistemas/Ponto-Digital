@@ -1,0 +1,195 @@
+🧠 PROMPT MESTRE — REPLIT AI
+Sistema de Ponto Eletrônico (FULLSTACK – RISCO CONTROLADO)
+
+Você é um engenheiro de software sênior.
+Crie um projeto FULLSTACK, contendo FRONTEND + BACKEND no mesmo repositório, seguindo estritamente as regras abaixo.
+
+1️⃣ REGRA DE OURO (não violar)
+
+🔴 FRONTEND e BACKEND são camadas SEPARADAS
+🔴 Nenhuma lógica de reconhecimento facial no frontend
+🔴 Nenhuma imagem facial pode ser persistida
+
+Se violar qualquer regra acima → implementação incorreta.
+
+2️⃣ Estrutura OBRIGATÓRIA do repositório
+/
+ ├── frontend/
+ │   ├── src/
+ │   ├── index.html
+ │   └── vite.config.ts
+ │
+ ├── backend/
+ │   ├── app/
+ │   │   ├── main.py
+ │   │   ├── auth/
+ │   │   ├── users/
+ │   │   ├── punches/
+ │   │   ├── justifications/
+ │   │   ├── audit/
+ │   │   ├── db/
+ │   │   └── utils/
+ │   └── requirements.txt
+ │
+ └── README.md
+
+
+🚫 NÃO misturar código
+🚫 NÃO criar monorepo complexo
+🚫 NÃO usar ferramentas externas
+
+3️⃣ STACK FIXA (não negociar)
+Frontend
+
+React 18
+
+TypeScript
+
+Vite
+
+Tailwind CSS
+
+Fetch API
+
+Context API
+
+PWA
+
+Backend
+
+Python 3.11
+
+FastAPI
+
+SQLAlchemy
+
+PostgreSQL
+
+JWT Auth
+
+🚫 Next.js
+🚫 Redux
+🚫 Redis
+🚫 GPU
+🚫 Docker/K8s
+
+4️⃣ ORDEM DE IMPLEMENTAÇÃO (OBRIGATÓRIA)
+FASE 1 — FRONTEND (PRIMEIRO)
+
+Implemente completamente:
+
+Login
+
+Tela de bater ponto
+
+Captura de câmera
+
+Captura de GPS
+
+UX de sucesso / falha
+
+Justificativa
+
+Histórico
+
+⚠️ Backend pode estar mockado APENAS com fetch real, apontando para URLs que existirão depois.
+
+FASE 2 — BACKEND (DEPOIS)
+
+Somente após o frontend estar funcional:
+
+Autenticação JWT
+
+Enrollment facial
+
+Punch com face_match
+
+Justificativas
+
+Auditoria
+
+Persistência real em PostgreSQL
+
+5️⃣ FRONTEND — REGRAS CRÍTICAS
+
+✔️ Captura apenas 1 frame
+✔️ Converte para Base64
+✔️ Envia para backend
+✔️ DESCARTA imagem imediatamente
+
+🚫 Reconhecimento facial
+🚫 Salvar imagem
+🚫 Liveness avançado
+
+6️⃣ BACKEND — REGRAS CRÍTICAS
+
+✔️ Processar imagem somente em memória
+✔️ Gerar embedding ArcFace 512
+✔️ L2 distance
+✔️ Threshold fixo: 0.35
+✔️ Salvar apenas embedding + score
+
+🚫 Salvar imagens
+🚫 Microserviços
+🚫 Redis
+
+7️⃣ ENDPOINTS OBRIGATÓRIOS
+Auth
+
+POST /auth/login
+
+Users
+
+POST /users
+
+POST /users/{id}/enroll-face
+
+Punch
+
+POST /punches/face-match
+
+Justifications
+
+POST /justifications
+
+GET /justifications
+
+8️⃣ STATUS DO PUNCH (REGRA FIXA)
+face_match == true E GPS ok → status = ok
+qualquer outro caso → status = pendente
+
+
+🚫 Nunca rejeitar automaticamente
+
+9️⃣ SEGURANÇA & LGPD
+
+✔️ Nunca persistir imagem
+✔️ Limpar memória após processamento
+✔️ HTTPS obrigatório
+✔️ Aviso de consentimento biométrico
+
+🔟 O QUE É PROIBIDO
+
+🚫 Frontend chamando DB
+🚫 Backend renderizando HTML
+🚫 Reconhecimento facial no frontend
+🚫 Upload de múltiplas imagens
+🚫 Overengineering
+
+1️⃣1️⃣ OBJETIVO FINAL
+
+O projeto deve:
+
+Subir localmente
+
+Ter frontend navegável
+
+Ter backend funcional
+
+Integrar via HTTP real
+
+Ser simples, auditável e seguro
+
+Permitir validar UX antes da biometria real
+
+🔚 FIM DO PROMPT
