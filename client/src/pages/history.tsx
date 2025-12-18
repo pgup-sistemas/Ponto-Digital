@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, LogIn, LogOut, MapPin, CheckCircle, AlertCircle, Search, Filter, FileText } from "lucide-react";
+import { Calendar, Clock, LogIn, LogOut, MapPin, CheckCircle, AlertCircle, Search, Filter, FileText, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 import type { Punch } from "@shared/schema";
 
 type FilterPeriod = "all" | "week" | "month";
@@ -14,10 +16,50 @@ type FilterPeriod = "all" | "week" | "month";
 export default function HistoryPage() {
   const [period, setPeriod] = useState<FilterPeriod>("week");
   const [searchDate, setSearchDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+  const { user } = useAuth();
 
   const { data: punches, isLoading } = useQuery<Punch[]>({
     queryKey: ["/api/punches", period],
   });
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(`/api/export/punches?period=${period}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) throw new Error("Erro ao exportar");
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pontos_${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Exportação concluída",
+        description: "Arquivo CSV baixado com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao exportar",
+        description: "Não foi possível gerar o arquivo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const filteredPunches = punches?.filter((punch) => {
     if (!searchDate) return true;
@@ -65,9 +107,14 @@ export default function HistoryPage() {
           <h1 className="text-2xl font-bold tracking-tight">Histórico</h1>
           <p className="text-muted-foreground">Seus registros de ponto</p>
         </div>
-        <Button variant="outline" data-testid="button-export">
-          <FileText className="h-4 w-4 mr-2" />
-          Exportar
+        <Button 
+          variant="outline" 
+          onClick={handleExport}
+          disabled={isExporting || !punches?.length}
+          data-testid="button-export"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {isExporting ? "Exportando..." : "Exportar CSV"}
         </Button>
       </div>
 

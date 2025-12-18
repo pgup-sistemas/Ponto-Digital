@@ -14,10 +14,13 @@ import PunchPage from "@/pages/punch";
 import HistoryPage from "@/pages/history";
 import JustificationsPage from "@/pages/justifications";
 import ProfilePage from "@/pages/profile";
+import AdminDashboardPage from "@/pages/admin-dashboard";
+import AdminUsersPage from "@/pages/admin-users";
+import AdminJustificationsPage from "@/pages/admin-justifications";
 import NotFound from "@/pages/not-found";
 
-function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { isAuthenticated, isLoading } = useAuth();
+function ProtectedRoute({ component: Component, adminOnly = false }: { component: React.ComponentType; adminOnly?: boolean }) {
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -33,6 +36,10 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
   if (!isAuthenticated) {
     return <Redirect to="/login" />;
+  }
+
+  if (adminOnly && user?.role !== "admin" && user?.role !== "manager") {
+    return <Redirect to="/" />;
   }
 
   return <Component />;
@@ -95,6 +102,27 @@ function Router() {
         <ProtectedRoute component={() => (
           <AppLayout>
             <ProfilePage />
+          </AppLayout>
+        )} />
+      </Route>
+      <Route path="/admin">
+        <ProtectedRoute adminOnly component={() => (
+          <AppLayout>
+            <AdminDashboardPage />
+          </AppLayout>
+        )} />
+      </Route>
+      <Route path="/admin/users">
+        <ProtectedRoute adminOnly component={() => (
+          <AppLayout>
+            <AdminUsersPage />
+          </AppLayout>
+        )} />
+      </Route>
+      <Route path="/admin/justifications">
+        <ProtectedRoute adminOnly component={() => (
+          <AppLayout>
+            <AdminJustificationsPage />
           </AppLayout>
         )} />
       </Route>

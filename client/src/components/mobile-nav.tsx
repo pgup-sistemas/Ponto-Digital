@@ -1,6 +1,7 @@
 import { useLocation, Link } from "wouter";
-import { Clock, History, FileText, User } from "lucide-react";
+import { Clock, History, FileText, User, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
 
 const navItems = [
   { href: "/", icon: Clock, label: "Ponto" },
@@ -11,11 +12,17 @@ const navItems = [
 
 export function MobileNav() {
   const [location] = useLocation();
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin" || user?.role === "manager";
+
+  const displayItems = isAdmin 
+    ? [...navItems.slice(0, 3), { href: "/admin", icon: Shield, label: "Admin" }]
+    : navItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t md:hidden">
       <div className="flex items-center justify-around h-16 px-2">
-        {navItems.map((item) => {
+        {displayItems.map((item) => {
           const isActive = location === item.href;
           const Icon = item.icon;
 

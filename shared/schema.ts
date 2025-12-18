@@ -147,6 +147,23 @@ export type Justification = typeof justifications.$inferSelect;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 export type AuditLog = typeof auditLogs.$inferSelect;
 
+// Admin update user schema
+export const adminUpdateUserSchema = z.object({
+  username: z.string().min(1).optional(),
+  password: z.string().min(6).optional(),
+  name: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  department: z.string().optional(),
+  role: z.enum(["employee", "manager", "admin"]).optional(),
+});
+
+// Justification review schema
+export const reviewJustificationSchema = z.object({
+  status: z.enum(["approved", "rejected"]),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type EnrollFaceInput = z.infer<typeof enrollFaceSchema>;
 export type PunchFaceMatchInput = z.infer<typeof punchFaceMatchSchema>;
+export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>;
+export type ReviewJustificationInput = z.infer<typeof reviewJustificationSchema>;

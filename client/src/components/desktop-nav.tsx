@@ -1,5 +1,5 @@
 import { useLocation, Link } from "wouter";
-import { Clock, History, FileText, User } from "lucide-react";
+import { Clock, History, FileText, User, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -15,6 +15,7 @@ const navItems = [
 export function DesktopNav() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const isAdmin = user?.role === "admin" || user?.role === "manager";
 
   const getInitials = (name: string) => {
     return name
@@ -56,6 +57,19 @@ export function DesktopNav() {
               </Link>
             );
           })}
+          {isAdmin && (
+            <Link href="/admin">
+              <Button
+                variant={location.startsWith("/admin") ? "secondary" : "ghost"}
+                size="sm"
+                className="gap-2"
+                data-testid="nav-desktop-admin"
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+              </Button>
+            </Link>
+          )}
         </nav>
       </div>
 
